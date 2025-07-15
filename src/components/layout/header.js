@@ -22,11 +22,24 @@ const Header = ({ darkMode, toggleDarkMode }) => {
   }, []);
 
   const scrollToSection = (href) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    // Close mobile menu first
     setIsMenuOpen(false);
+
+    // Add a small delay to ensure menu closes before scrolling
+    setTimeout(() => {
+      const element = document.querySelector(href);
+      if (element) {
+        // Get header height to offset scroll position
+        const headerHeight = 80; // Account for fixed header
+        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - headerHeight;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
   };
 
   return (
@@ -34,8 +47,8 @@ const Header = ({ darkMode, toggleDarkMode }) => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-          ? 'bg-background/80 backdrop-blur-md border-b border-border shadow-sm'
-          : 'bg-transparent'
+        ? 'bg-background/80 backdrop-blur-md border-b border-border shadow-sm'
+        : 'bg-transparent'
         }`}
     >
       <div className="container mx-auto px-4">
@@ -58,8 +71,8 @@ const Header = ({ darkMode, toggleDarkMode }) => {
                 key={item.label}
                 onClick={() => scrollToSection(item.href)}
                 className={`text-sm font-medium transition-colors hover:text-primary ${activeSection === item.href.substring(1)
-                    ? 'text-primary'
-                    : 'text-muted-foreground'
+                  ? 'text-primary'
+                  : 'text-muted-foreground'
                   }`}
               >
                 {item.label}
@@ -98,16 +111,16 @@ const Header = ({ darkMode, toggleDarkMode }) => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden border-t border-border bg-background/95 backdrop-blur-md"
+              className="md:hidden border-t border-border bg-background backdrop-blur-md shadow-lg"
             >
-              <div className="py-4 space-y-2">
+              <div className="py-4 space-y-1">
                 {NAVIGATION_ITEMS.map((item) => (
                   <button
                     key={item.label}
                     onClick={() => scrollToSection(item.href)}
-                    className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors hover:text-primary hover:bg-accent rounded-md ${activeSection === item.href.substring(1)
-                        ? 'text-primary bg-accent'
-                        : 'text-muted-foreground'
+                    className={`block w-full text-left px-6 py-3 text-base font-medium transition-all duration-200 ${activeSection === item.href.substring(1)
+                      ? 'text-primary bg-primary/10 border-r-2 border-primary'
+                      : 'text-foreground hover:text-primary hover:bg-muted/50'
                       }`}
                   >
                     {item.label}
